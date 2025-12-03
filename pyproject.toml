@@ -1,0 +1,32 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "PrivFedAE"
+version = "0.1.0"
+description = "Privacy-Preserving Federated Autoencoder for IoT Malware Detection"
+authors = [
+    { name = "Kirtana S" }
+]
+requires-python = ">=3.10"
+
+
+[tool.flwr.app]
+publisher = "kirtana"
+
+[tool.flwr.app.components]
+serverapp = "PrivFedCae.server:app"
+clientapp = "PrivFedCae.client:app"
+
+[tool.flwr.app.config]
+num_rounds = 3
+
+[tool.flwr.federations]
+default = "local-simulation"
+
+[tool.flwr.federations.local-simulation]
+options.num-supernodes = 5
+
+[tool.flwr.federations.local-simulation.supernode]
+partition-id = "{AUTO_INCREMENT}"
