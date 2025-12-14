@@ -211,16 +211,16 @@ def simple_malware_detection(model, benign_loader, malware_loader, percentile=95
     benign_mean = float(np.mean(benign_errors)) if len(benign_errors) else 0.0
 
     # Print debugging info (keeps your console logs)
-    print("\n=== Simple Malware Detection ===")
+    ''' print("\n=== Simple Malware Detection ===")
     print(f"Benign Mean Error: {benign_mean:.6f}")
     print(f"Malware Mean Error: {malware_mean:.6f}")
     print(f"Detection Threshold (p{percentile}): {threshold:.6f}")
-    print(f"Flagged Malware Samples: {anomalies} / {len(malware_errors)}")
+    print(f"Flagged Malware Samples: {anomalies} / {len(malware_errors)}")'''
 
     # show flagged indices for debugging only (do NOT return the array)
     flagged_indices = np.where(flags)[0]
-    for idx in flagged_indices:
-        print(f"  Sample {int(idx)} error: {float(malware_errors[int(idx)]) :.6f}")
+    '''for idx in flagged_indices:
+        print(f"  Sample {int(idx)} error: {float(malware_errors[int(idx)]) :.6f}")'''
 
     # return only serializable scalars
     return {
@@ -266,7 +266,7 @@ class CAEClient(NumPyClient):
         loss = train(
             self.model,
             self.train_loader,
-            epochs=50,
+            epochs=10,
             noise_multiplier=1.0,
             max_grad_norm=1.0
         )

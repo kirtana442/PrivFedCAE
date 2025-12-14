@@ -1,7 +1,7 @@
 # Import necessary modules from Flower framework
 import flwr as fl
 from flwr.common import Context
-from flwr.server import ServerApp, ServerAppComponents
+from flwr.server import ServerApp, ServerAppComponents, ServerConfig
 from typing import List, Tuple
 
 
@@ -95,36 +95,37 @@ def server_fn(context: Context):
             # Final summary
             malware_report["average_anomaly_rate"] = total_anomaly_rate / len(results)
 
-            print(f"\n{'-' * 80}")
+            '''print(f"\n{'-' * 80}")
             print(f"[SERVER SUMMARY]")
             print(f"├─ Total clients: {malware_report['total_clients']}")
             print(f"├─ Clients with detections: {malware_report['clients_with_detections']}")
             print(f"├─ Total anomalies: {malware_report['total_anomalies_detected']}")
             print(f"└─ Avg anomaly rate: {malware_report['average_anomaly_rate']:.2f}%")
-            print(f"{'-' * 80}\n")
+            print(f"{'-' * 80}\n")'''
 
             # Pretty-print JSON summary for history logs
-            print("[SERVER] Detailed metrics per client:")
+            '''print("[SERVER] Detailed metrics per client:")
             print(json.dumps(malware_report["client_details"], indent=4))
-            print(f"{'=' * 80}\n")
+            print(f"{'=' * 80}\n")'''
 
             aggregated_params, aggregated_metrics = super().aggregate_evaluate(server_round, results, failures)
             aggregated_metrics.update(malware_report)
             return aggregated_params, aggregated_metrics
 
+    config = ServerConfig(num_rounds=3)
 
     # Instantiate custom strategy with malware detection awareness
     strategy = MalwareAwareFedAvg(
         fraction_fit=1.0,              # Fraction of clients to sample for training
         fraction_evaluate=1.0,         # Fraction of clients to sample for evaluation
-        min_fit_clients=5,             # Minimum clients required for training round
-        min_evaluate_clients=5,        # Minimum clients required for evaluation round
-        min_available_clients=5,       # Minimum clients that must be available to start
+        min_fit_clients=1,             # Minimum clients required for training round
+        min_evaluate_clients=1,        # Minimum clients required for evaluation round
+        min_available_clients=1,       # Minimum clients that must be available to start
         evaluate_fn=None,              # No centralized evaluation function
     )
 
     # Return server components with the strategy
-    return ServerAppComponents(strategy=strategy)
+    return ServerAppComponents(strategy=strategy,config=config)
 
 
 # Create the Flower server app
